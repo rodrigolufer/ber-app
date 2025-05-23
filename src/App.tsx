@@ -5,7 +5,7 @@ import React from 'react';
     import CompanyManagement from './components/Admin/CompanyManagement';
     import EmployeeManagement from './components/Admin/EmployeeManagement';
     import Reports from './components/Reports/Reports';
-    import { Home, LayoutList, BarChart2, FileText, LogOut, Users } from 'lucide-react';
+    import { Home, LayoutList, BarChart2, FileText, LogOut, Users } from 'lucide-react'; // Import Users
 
     function App() {
       const userRole = localStorage.getItem('userRole');
@@ -24,7 +24,7 @@ import React from 'react';
         <div className="bg-gray-800 text-white w-64 h-screen py-4 px-2">
           <div className="flex items-center justify-center mb-6">
             <Home className="h-8 w-8 mr-2" />
-            <span className="text-xl font-bold">OrgClima</span>
+            <span className="text-xl font-bold">BER</span>
           </div>
           <nav>
             <ul>
