@@ -16,12 +16,20 @@ import React, { useState, useEffect } from 'react';
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState<string | null>(null);
 
+      // NOTE: This is a basic example. Replace with proper authentication context.
+      const userRole = localStorage.getItem('userRole');
+      if (userRole !== 'admin') {
+        // Redirect if not admin
+        navigate('/dashboard'); // Redirect to dashboard or a forbidden page
+        return null;
+      }
+
       useEffect(() => {
         const fetchEmployees = async () => {
           setLoading(true);
           setError(null);
           try {
-            // Simulate API call
+            // Simulate API call - Replace with actual API call
             const response = await new Promise<Employee[]>((resolve) => {
               setTimeout(() => {
                 resolve([
@@ -56,14 +64,9 @@ import React, { useState, useEffect } from 'react';
         alert(`Delete employee with ID: ${employeeId}`);
       };
 
-      const userRole = localStorage.getItem('userRole');
-      if (userRole !== 'admin') {
-        navigate('/dashboard');
-        return null;
-      }
 
       return (
-        <div className="p-6">
+        <div className="p-0"> {/* Removed padding as App.tsx content area has padding */}
           <h1 className="text-2xl font-bold mb-4">Employee Management</h1>
 
           {loading && <p>Loading employees...</p>}

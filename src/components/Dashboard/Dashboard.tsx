@@ -4,17 +4,19 @@ import React from 'react';
 
     const Dashboard: React.FC = () => {
       const navigate = useNavigate();
+      // NOTE: This is a basic example. Replace with proper authentication context.
       const userRole = localStorage.getItem('userRole');
 
-      if (!userRole) {
-        navigate('/login');
-        return null;
-      }
+      // Redirect if not authenticated (basic check)
+      // if (!userRole) {
+      //   navigate('/login'); // Assuming a login route exists
+      //   return null;
+      // }
 
       const isAdmin = userRole === 'admin';
 
       return (
-        <div className="p-6">
+        <div className="p-0"> {/* Removed padding as App.tsx content area has padding */}
           <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -55,7 +57,11 @@ import React from 'react';
           <div className="mt-6">
             <h2 className="text-xl font-semibold mb-2">Sentiment Distribution</h2>
             <div className="bg-white rounded-lg shadow-md p-4">
-              <PieChart className="h-48 w-full" />
+              {/* Placeholder for Pie Chart */}
+              <div className="flex items-center justify-center h-48 text-gray-400">
+                 <PieChart className="h-12 w-12" />
+                 <span className="ml-2">Pie Chart Placeholder</span>
+              </div>
             </div>
           </div>
 

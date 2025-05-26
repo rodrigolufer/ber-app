@@ -1,117 +1,78 @@
 import React from 'react';
-    import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-    import Login from './components/Auth/Login';
-    import Dashboard from './components/Dashboard/Dashboard';
-    import CompanyManagement from './components/Admin/CompanyManagement';
-    import EmployeeManagement from './components/Admin/EmployeeManagement';
-    import Reports from './components/Reports/Reports';
-    import { Home, LayoutList, BarChart2, FileText, LogOut, Users } from 'lucide-react'; // Import Users
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import Dashboard from './components/Dashboard/Dashboard';
+import CompanyManagement from './components/Admin/CompanyManagement';
+import EmployeeManagement from './components/Admin/EmployeeManagement';
+import Reports from './components/Reports/Reports';
+import { LayoutDashboard, Building, Users, BarChart2 } from 'lucide-react';
 
-    function App() {
-      const userRole = localStorage.getItem('userRole');
-      const isAdmin = userRole === 'admin';
+function App() {
+  const location = useLocation();
 
-      const PrivateRoute = ({ children, roles }: { children: React.ReactNode; roles: string[] }) => {
-        const isAuthenticated = !!userRole && roles.includes(userRole);
-        return isAuthenticated ? (
-          children
-        ) : (
-          <Navigate to="/login" replace />
-        );
-      };
+  const sidebarLinks = [
+    { path: '/dashboard', name: 'Dashboard', icon: LayoutDashboard },
+    { path: '/admin/companies', name: 'Gestão de Empresas', icon: Building },
+    { path: '/admin/employees', name: 'Gestão de Usuários', icon: Users },
+    { path: '/reports', name: 'Relatórios', icon: BarChart2 },
+  ];
 
-      const Sidebar = () => (
-        <div className="bg-gray-800 text-white w-64 h-screen py-4 px-2">
-          <div className="flex items-center justify-center mb-6">
-            <Home className="h-8 w-8 mr-2" />
-            <span className="text-xl font-bold">BER</span>
-          </div>
-          <nav>
-            <ul>
-              <li className="mb-2">
-                <a href="/dashboard" className="flex items-center py-2 px-4 rounded hover:bg-gray-700">
-                  <LayoutList className="h-5 w-5 mr-2" />
-                  Dashboard
-                </a>
-              </li>
-              <li className="mb-2">
-                <a href="/reports" className="flex items-center py-2 px-4 rounded hover:bg-gray-700">
-                  <FileText className="h-5 w-5 mr-2" />
-                  Reports
-                </a>
-              </li>
-              {isAdmin && (
-                <>
-                  <li className="mb-2">
-                    <a href="/admin/companies" className="flex items-center py-2 px-4 rounded hover:bg-gray-700">
-                      <BarChart2 className="h-5 w-5 mr-2" />
-                      Company Management
-                    </a>
-                  </li>
-                  <li className="mb-2">
-                    <a href="/admin/employees" className="flex items-center py-2 px-4 rounded hover:bg-gray-700">
-                      <Users className="h-5 w-5 mr-2" />
-                      Employee Management
-                    </a>
-                  </li>
-                </>
-              )}
-              <li className="mt-4">
-                <a href="/login" onClick={() => localStorage.removeItem('userRole')} className="flex items-center py-2 px-4 rounded hover:bg-gray-700">
-                  <LogOut className="h-5 w-5 mr-2" />
-                  Logout
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      );
+  // Basic check for admin role for admin routes (replace with proper auth logic)
+  const userRole = localStorage.getItem('userRole');
+  const isAdmin = userRole === 'admin';
 
-      return (
-        <Router>
-          <div className="flex">
-            <Sidebar />
-            <div className="flex-1">
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route
-                  path="/dashboard"
-                  element={
-                    <PrivateRoute roles={['admin', 'manager', 'user']}>
-                      <Dashboard />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/reports"
-                  element={
-                    <PrivateRoute roles={['admin', 'manager', 'user']}>
-                      <Reports />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/admin/companies"
-                  element={
-                    <PrivateRoute roles={['admin']}>
-                      <CompanyManagement />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/admin/employees"
-                  element={
-                    <PrivateRoute roles={['admin']}>
-                      <EmployeeManagement />
-                    </PrivateRoute>
-                  }
-                />
-                <Route path="*" element={<Navigate to="/login" />} />
-              </Routes>
-            </div>
-          </div>
-        </Router>
-      );
-    }
+  return (
+    // Main container with red border
+    <div className="flex flex-row h-screen border border-red-500">
+      {/* Sidebar with blue border */}
+      <div className="w-64 bg-gray-800 text-white p-4 flex flex-col border border-blue-500">
+        <h2 className="text-xl font-bold mb-6">BER App</h2>
+        <nav>
+          <ul>
+            {sidebarLinks.map((link) => {
+              // Only show admin links if user is admin
+              if (link.path.startsWith('/admin') && !isAdmin) {
+                return null;
+              }
+              const isActive = location.pathname === link.path;
+              return (
+                <li key={link.path} className="mb-2">
+                  <Link
+                    to={link.path}
+                    className={`flex items-center py-2 px-3 rounded-md ${
+                      isActive ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                    }`}
+                  >
+                    <link.icon className="h-5 w-5 mr-3" />
+                    {link.name}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+        {/* Add more sidebar content here */}
+      </div>
 
-    export default App;
+      {/* Content Area with green border */}
+      <div className="flex-1 overflow-y-auto bg-gray-100 p-6 border border-green-500">
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          {/* Protect admin routes - basic check */}
+          {isAdmin && (
+            <>
+              <Route path="/admin/companies" element={<CompanyManagement />} />
+              <Route path="/admin/employees" element={<EmployeeManagement />} />
+            </>
+          )}
+          <Route path="/reports" element={<Reports />} />
+          {/* Default route, maybe redirect to dashboard */}
+          <Route path="/" element={<Dashboard />} />
+          {/* Add a 404 route */}
+          <Route path="*" element={<div>404 Not Found</div>} />
+        </Routes>
+      </div>
+    </div>
+  );
+}
+
+export default App;
